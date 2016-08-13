@@ -171,10 +171,11 @@ d3.csv("deals.json", function(error, flights) {
   var flight = crossfilter(flights),
       all = flight.groupAll(),
       year = flight.dimension(function(d) { return d.year; }),
-      years = year.group(Math.floor);
+      years = year.group(Math.floor),
 	  cost = flight.dimension(function(d) { return Math.min(1000000, d.cost); }),
-      costs = cost.group(function(d) { return Math.floor(d / 100000) * 100000; });
-	  
+      costs = cost.group(function(d) { return Math.floor(d / 100000) * 100000; }),
+	  netto = flight.dimension(function(d) { return Math.min(100000, d.netto); }),
+      nettos = netto.group(function(d) { return Math.floor(d / 10000) * 10000; });
   var charts = [
     barChart()
         .dimension(year)
@@ -186,8 +187,14 @@ d3.csv("deals.json", function(error, flights) {
         .dimension(cost)
         .group(costs)
       .x(d3.scale.linear()
-        .domain([0, 1100000])
-        .rangeRound([0, 50 * 21]))
+        .domain([0, 1000000])
+        .rangeRound([0, 25 * 21])),
+	barChart()
+        .dimension(netto)
+        .group(nettos)
+      .x(d3.scale.linear()
+        .domain([0, 100000])
+        .rangeRound([0, 25 * 21]))
   ];
   // Given our array of charts, which we assume are in the same order as the
   // .chart elements in the DOM, bind the charts to the DOM and render them.
