@@ -157,7 +157,7 @@ var g = svg.selectAll(".arc")
         	var mouseVal = d3.mouse(this);
         	div.style("display","none");
         	div
-        	.html("Страна:"+d.data.country+"</br>"+"Объем:"+d.data.volume)
+        	.html("Страна:"+d.data.country+"</br>"+"Объем:"+d.data.volume+" (л 100% спирта)")
             .style("left", (d3.event.pageX+12) + "px")
             .style("top", (d3.event.pageY-10) + "px")
             .style("opacity", 1)
