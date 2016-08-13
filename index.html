@@ -143,15 +143,6 @@ aside {
   <div id="hour-chart" class="chart">
     <div class="title">Time of Day</div>
   </div>
-  <div id="delay-chart" class="chart">
-    <div class="title">Arrival Delay (min.)</div>
-  </div>
-  <div id="distance-chart" class="chart">
-    <div class="title">Distance (mi.)</div>
-  </div>
-  <div id="date-chart" class="chart">
-    <div class="title">Date</div>
-  </div>
 </div>
 
 <aside id="totals"><span id="active">-</span> of <span id="total">-</span> flights selected.</aside>
@@ -209,18 +200,6 @@ d3.csv("flights-3m.json", function(error, flights) {
       .x(d3.scale.linear()
         .domain([0, 24])
         .rangeRound([0, 10 * 24])),
-    barChart()
-        .dimension(delay)
-        .group(delays)
-      .x(d3.scale.linear()
-        .domain([-60, 150])
-        .rangeRound([0, 10 * 21])),
-    barChart()
-        .dimension(distance)
-        .group(distances)
-      .x(d3.scale.linear()
-        .domain([0, 2000])
-        .rangeRound([0, 10 * 40]))
   ];
   // Given our array of charts, which we assume are in the same order as the
   // .chart elements in the DOM, bind the charts to the DOM and render them.
@@ -282,9 +261,6 @@ d3.csv("flights-3m.json", function(error, flights) {
       flightEnter.append("div")
           .attr("class", "origin")
           .text(function(d) { return d.origin; });
-      flightEnter.append("div")
-          .attr("class", "destination")
-          .text(function(d) { return d.destination; });
       flightEnter.append("div")
           .attr("class", "distance")
           .text(function(d) { return formatNumber(d.distance) + " mi."; });
