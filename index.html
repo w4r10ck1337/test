@@ -187,6 +187,7 @@ d3.csv("deals.json", function(error, flights) {
   // A little coercion, since the CSV is untyped.
   flights.forEach(function(d, i) {
     d.index = i;
+	d.year = d.year;
   });
   // Create the crossfilter for the relevant dimensions and groups.
   var flight = crossfilter(flights),
