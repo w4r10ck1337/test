@@ -173,7 +173,7 @@ d3.csv("deals.json", function(error, flights) {
       year = flight.dimension(function(d) { return d.year; }),
       years = year.group(Math.floor);
 	  cost = flight.dimension(function(d) { return d.cost; }),
-      costs = cost.group(function(d) { return d.cost; });
+      costs = cost.group(function(d) { return Math.floor(d.cost / 10000) * 10000); });
 	  
 	  
   var charts = [
@@ -187,7 +187,7 @@ d3.csv("deals.json", function(error, flights) {
         .dimension(cost)
         .group(costs)
       .x(d3.scale.linear()
-        .domain([0, 10000000000])
+        .domain([0, 20000])
         .rangeRound([0, 10 * 21]))
   ];
   // Given our array of charts, which we assume are in the same order as the
