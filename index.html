@@ -238,7 +238,7 @@ d3.csv("deals.json", function(error, flights) {
           .attr("class", "date")
         .append("div")
           .attr("class", "day")
-          .text(function(d) { return 1488; });
+          .text(function(d) { return d.key; });
       date.exit().remove();
       var flight = date.order().selectAll(".flight")
           .data(function(d) { return d.values; }, function(d) { return d.index; });
@@ -262,9 +262,6 @@ d3.csv("deals.json", function(error, flights) {
       flightEnter.append("div")
           .attr("class", "destination")
           .text(function(d) { return d.region; });
-	  flightEnter.append("div")
-          .attr("class", "destination")
-          .text(function(d) { return d.year; });
       flight.exit().remove();
       flight.order();
     });
