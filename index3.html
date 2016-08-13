@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Поставки алкоголя</title>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> 
+    <link rel="stylesheet" href="normalize.css">
+    <style>
+	  .tooltip{
+position: absolute;	
+  text-align: center;	
+  width: 13%;	
+  height:10%;		
+  padding: 2vw;	
+  font: 1.2vw sans-serif;		
+  border: 0px;					
+  border-radius: 8px;
+  color:black;
+  box-shadow: -3px 3px 15px #888888;
+  opacity:0;	
+
+}
+</style>
+<body>
+<h2>Рейтинг стран по поставкам алкоголя в Россию</h2>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<div id = "svgContent"></div>
+
+<script>
+var data = [{"country":"БЕЛЬГИЯ","volume":185071},
+{"country":"БОЛГАРИЯ","volume":39273687},
+{"country":"БОСНИЯ И ГЕРЦЕГОВИНА","volume":5458},
+{"country":"БАРБАДОС","volume":25261},
+{"country":"БЕРМУДЫ","volume":16724},
+{"country":"ЯПОНИЯ","volume":307917},
+{"country":"ЯМАЙКА","volume":97999},
+{"country":"БРАЗИЛИЯ","volume":16165480},
+{"country":"БАГАМЫ","volume":159681},
+{"country":"БЕЛАРУСЬ","volume":11845862},
+{"country":"СЕРБИЯ","volume":16729194},
+{"country":"РЕЮНЬОН","volume":16687},
+{"country":"РУМЫНИЯ","volume":850490},
+{"country":"ГВАТЕМАЛА","volume":66217},
+{"country":"ГРЕЦИЯ","volume":1962443},
+{"country":"ГВАДЕЛУПА","volume":1878},
+{"country":"ГАЙАНА","volume":75840},
+{"country":"ФРАНЦУЗСКАЯ ГВИАНА","volume":257},
+{"country":"ГРУЗИЯ","volume":66994272},
+{"country":"ГРЕНАДА","volume":2664},
+{"country":"СОЕДИНЕННОЕ КОРОЛЕВСТВО","volume":50792198},
+{"country":"ТУНИС","volume":337},
+{"country":"ХОРВАТИЯ","volume":85574},
+{"country":"ВЕНГРИЯ","volume":4898195},
+{"country":"ПУЭРТО-РИКО","volume":3283725},
+{"country":"ПОРТУГАЛИЯ","volume":8856010},
+{"country":"ПАНАМА","volume":214348},
+{"country":"ПЕРУ","volume":68777},
+{"country":"ПОЛЬША","volume":2197483},
+{"country":"ЭСТОНИЯ","volume":586475},
+{"country":"ЮЖНАЯ АФРИКА","volume":94566249},
+{"country":"ИСПАНИЯ","volume":385975547},
+{"country":"ЧЕРНОГОРИЯ","volume":2703667},
+{"country":"МОЛДОВА, РЕСПУБЛИКА","volume":55802933},
+{"country":"МАРОККО","volume":1912},
+{"country":"УЗБЕКИСТАН","volume":24865669},
+{"country":"МОНГОЛИЯ","volume":15741},
+{"country":"РЕСПУБЛИКА МАКЕДОНИЯ","volume":4381255},
+{"country":"МАВРИКИЙ","volume":2068},
+{"country":"МАЛЬТА","volume":1845},
+{"country":"МАРТИНИКА","volume":1062},
+{"country":"УКРАИНА","volume":216230161},
+{"country":"МЕКСИКА","volume":5925303},
+{"country":"ИЗРАИЛЬ","volume":539375},
+{"country":"ФРАНЦИЯ","volume":193988521},
+{"country":"ФИНЛЯНДИЯ","volume":6165365},
+{"country":"НИКАРАГУА","volume":32305},
+{"country":"НИДЕРЛАНДЫ","volume":629486},
+{"country":"НОРВЕГИЯ","volume":11388},
+{"country":"НОВАЯ ЗЕЛАНДИЯ","volume":2024020},
+{"country":"ШВЕЙЦАРИЯ","volume":182387},
+{"country":"КОЛУМБИЯ","volume":2594},
+{"country":"КИТАЙ","volume":27780},
+{"country":"ЧИЛИ","volume":53348368},
+{"country":"КАНАДА","volume":8685846},
+{"country":"ЧЕШСКАЯ РЕСПУБЛИКА","volume":1214081},
+{"country":"КИПР","volume":1833894},
+{"country":"УРУГВАЙ","volume":15977619},
+{"country":"КУБА","volume":730171},
+{"country":"КИРГИЗИЯ","volume":21511},
+{"country":"СУРИНАМ","volume":4855},
+{"country":"СЛОВАКИЯ","volume":265759},
+{"country":"КОРЕЯ, РЕСПУБЛИКА","volume":9448},
+{"country":"СЛОВЕНИЯ","volume":53376},
+{"country":"СЕЙШЕЛЫ","volume":419},
+{"country":"КАЗАХСТАН","volume":526372},
+{"country":"СИНГАПУР","volume":1054},
+{"country":"ШВЕЦИЯ","volume":2665544},
+{"country":"ДОМИНИКАНСКАЯ РЕСПУБЛИКА","volume":231246},
+{"country":"ДАНИЯ","volume":554549},
+{"country":"ГЕРМАНИЯ","volume":46883357},
+{"country":"СОЕДИНЕННЫЕ ШТАТЫ","volume":15914010},
+{"country":"ЛИВАН","volume":7252},
+{"country":"СЕНТ-ЛЮСИЯ","volume":3074},
+{"country":"ТРИНИДАД И ТОБАГО","volume":10340},
+{"country":"ТУРЦИЯ","volume":17060},
+{"country":"ЛАТВИЯ","volume":833638},
+{"country":"ЛИТВА","volume":641576},
+{"country":"ЛЮКСЕМБУРГ","volume":7344},
+{"country":"ТАИЛАНД","volume":13857},
+{"country":"АБХАЗИЯ","volume":48207364},
+{"country":"ВЕНЕСУЭЛА,БОЛИВАРИАНСКАЯ РЕСПУБЛИКА","volume":25065},
+{"country":"ИСЛАНДИЯ","volume":2255},
+{"country":"ИРАН, ИСЛАМСКАЯ РЕСПУБЛИКА","volume":457},
+{"country":"АРМЕНИЯ","volume":44892531},
+{"country":"ИТАЛИЯ","volume":295694048},
+{"country":"АРГЕНТИНА","volume":34787838},
+{"country":"АВСТРАЛИЯ","volume":24582377},
+{"country":"АВСТРИЯ","volume":1279767},
+{"country":"ИНДИЯ","volume":177676},
+{"country":"АЗЕРБАЙДЖАН","volume":18979595},
+{"country":"ИРЛАНДИЯ","volume":6073680}
+];
+var margin = {top:40,left:40,right:40,bottom:40};
+width = 300;
+height = 300;
+radius = Math.min(width-100,height-100)/2;
+var color = d3.scale.category10();
+var arc = d3.svg.arc()  
+         .outerRadius(radius -230)
+         .innerRadius(radius - 50)
+		 .cornerRadius(20);
+var arcOver = d3.svg.arc()  
+.outerRadius(radius +50)
+.innerRadius(0);
+
+var a=width/2 - 20;
+var b=height/2 - 90;
+var svg = d3.select("#svgContent").append("svg")
+          .attr("viewBox", "0 0 " + width + " " + height/2)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+          .append("g")
+          .attr("transform","translate("+a+","+b+")");
+
+		  div = d3.select("body")
+.append("div") 
+.attr("class", "tooltip");
+var pie = d3.layout.pie()
+          .sort(null)
+          .value(function(d){return d.volume;})
+		  .padAngle(.02);
+var g = svg.selectAll(".arc")
+        .data(pie(data))
+        .enter()
+        .append("g")
+        .attr("class","arc")
+         .on("mousemove",function(d){
+        	var mouseVal = d3.mouse(this);
+        	div.style("display","none");
+        	div
+        	.html("Страна:"+d.data.country+"</br>"+"Объем:"+d.data.volume)
+            .style("left", (d3.event.pageX+12) + "px")
+            .style("top", (d3.event.pageY-10) + "px")
+            .style("opacity", 1)
+            .style("display","block");
+        })
+        .on("mouseout",function(){div.html(" ").style("display","none");});
+        
+        
+        
+		g.append("path")
+		.attr("d",arc)
+		.style("fill",function(d){return color(d.data.country);})
+		 .attr("d", arc);;
+/*
+		            svg.selectAll("text").data(pie(data)).enter()
+		             .append("text")
+		             .attr("class","label1")
+		             .attr("transform", function(d) {
+		      		   var dist=radius+15;
+		    		   var winkel=(d.startAngle+d.endAngle)/2;
+		    		   var x=dist*Math.sin(winkel)-4;
+		    		   var y=-dist*Math.cos(winkel)-4;
+		    		   
+		    		   return "translate(" + x + "," + y + ")";
+		            })
+		            .attr("dy", "0.35em")
+		            .attr("text-anchor", "middle")
+		            
+		    	    .text(function(d){
+		    	      return d.value;
+		    	    });
+		    	    
+		    	   
+		
+*/
+</script>
+
+
+</body>
+</html>
