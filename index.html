@@ -192,7 +192,7 @@ d3.csv("deals.json", function(error, flights) {
   var flight = crossfilter(flights),
       all = flight.groupAll(),
       year = flight.dimension(function(d) { return d.year; }),
-      years = date.group(function(d) { return d.year; });
+      years = year.group(function(d) { return d.year; });
 	  
   var charts = [
     barChart()
