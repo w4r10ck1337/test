@@ -201,12 +201,6 @@ d3.csv("flights-3m.json", function(error, flights) {
       distances = distance.group(function(d) { return Math.floor(d / 50) * 50; });
   var charts = [
     barChart()
-        .dimension(hour)
-        .group(hours)
-      .x(d3.scale.linear()
-        .domain([0, 12])
-        .rangeRound([0, 10 * 12])),
-    barChart()
         .dimension(delay)
         .group(delays)
       .x(d3.scale.linear()
