@@ -168,7 +168,7 @@ d3.csv("deals.json", function(error, flights) {
   var flight = crossfilter(flights),
       all = flight.groupAll(),
 	  inout = flight.dimension(function(d) { return d.inout; }),
-      inouts = inout.group(function(d) { return d; }),
+      inouts = inout.group(function(d) { if (d == "Импорт") return 0; return 1; }),
       year = flight.dimension(function(d) { return d.year; }),
       years = year.group(Math.floor),
 	  cost = flight.dimension(function(d) { return Math.min(1000000, d.cost); }),
@@ -198,7 +198,7 @@ d3.csv("deals.json", function(error, flights) {
         .dimension(inout)
         .group(inouts)
       .x(d3.scale.linear()
-        .domain(["Импорт", "Экспорт"])
+        .domain([0, 1])
         .rangeRound([0, 5 * 21]))
   ];
   // Given our array of charts, which we assume are in the same order as the
