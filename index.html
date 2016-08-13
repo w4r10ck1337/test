@@ -173,7 +173,7 @@ d3.csv("deals.json", function(error, flights) {
       year = flight.dimension(function(d) { return d.year; }),
       years = year.group(Math.floor);
 	  cost = flight.dimension(function(d) { return d.cost; }),
-      costs = cost.group(function(d) { return Math.floor(d.cost / 10000) * 10000; });
+      costs = cost.group(Math.floor);
 	  
 	  
   var charts = [
@@ -182,7 +182,7 @@ d3.csv("deals.json", function(error, flights) {
         .group(years)
       .x(d3.scale.linear()
         .domain([2010, 2020])
-        .rangeRound([0, 20 * 21])),
+        .rangeRound([0, 10 * 21])),
 	barChart()
         .dimension(cost)
         .group(costs)
