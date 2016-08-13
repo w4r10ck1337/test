@@ -220,15 +220,7 @@ d3.csv("flights-3m.json", function(error, flights) {
         .group(distances)
       .x(d3.scale.linear()
         .domain([0, 2000])
-        .rangeRound([0, 10 * 40])),
-    barChart()
-        .dimension(date)
-        .group(dates)
-        .round(d3.time.day.round)
-      .x(d3.time.scale()
-        .domain([new Date(2001, 0, 1), new Date(2001, 3, 1)])
-        .rangeRound([0, 10 * 90]))
-        .filter([new Date(2001, 1, 1), new Date(2001, 2, 1)])
+        .rangeRound([0, 10 * 40]))
   ];
   // Given our array of charts, which we assume are in the same order as the
   // .chart elements in the DOM, bind the charts to the DOM and render them.
