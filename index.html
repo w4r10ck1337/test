@@ -190,13 +190,13 @@ d3.csv("deals.json", function(error, flights) {
         .dimension(cost)
         .group(costs)
       .x(d3.scale.linear()
-        .domain([0, 1000000])
+        .domain([0, 1100000])
         .rangeRound([0, 25 * 21])),
 	barChart()
         .dimension(netto)
         .group(nettos)
       .x(d3.scale.linear()
-        .domain([0, 100000])
+        .domain([0, 110000])
         .rangeRound([0, 25 * 21]))
   ];
   // Given our array of charts, which we assume are in the same order as the
