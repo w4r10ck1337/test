@@ -204,7 +204,7 @@ d3.csv("deals.json", function(error, deals) {
       .data([flightList]);
   // Render the total.
   d3.selectAll("#total")
-      .text(formatNumber(flight.size()));
+      .text(formatNumber(deal.size()));
   renderAll();
   // Renders the specified chart or list.
   function render(method) {
