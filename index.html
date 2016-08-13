@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>Crossfilter</title>
+<title>Визуализация импорта/экспорта в Россию на примере импорта/экспорта с Турцией</title>
 <style>
 @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700);
 body {
@@ -129,6 +129,8 @@ aside {
 
 <div id="body">
 
+<h2>Визуализация импорта/экспорта в Россию на примере импорта/экспорта с Турцией</h2>
+
 <div id="charts">
   <div id="year-chart" class="chart">
     <div class="title">Год</div>
@@ -143,7 +145,7 @@ aside {
     <div class="title">Импорт/Экспорт</div>
   </div>
   <div id="netto-chart" class="chart">
-    <div class="title">Регион</div>
+    <div class="title">Федеральный округ</div>
   </div>
 </div>
 
@@ -152,6 +154,8 @@ aside {
 <div id="lists">
   <div id="flight-list" class="list"><div class="flight"><div class="destination">Импорт/Экспорт</div><div class="destination">Год</div><div class="destination">Цена</div><div class="destination">Нетто</div><div class="destination">Количество</div><div class="destination">Регион</div><div class="destination">Наименование</div></div></div>
 </div>
+
+<p>Работа команды "Кекус" в составе: Зуев Степан, Макеенков Николай, Лактионов Александр</p>
 
 </div>
 
@@ -191,8 +195,8 @@ d3.csv("deals.json", function(error, flights) {
         .dimension(year)
         .group(years)
       .x(d3.scale.linear()
-        .domain([2013, 2017])
-        .rangeRound([0, 14 * 22])),
+        .domain([2010, 2020])
+        .rangeRound([0, 15 * 22])),
 	barChart()
         .dimension(cost)
         .group(costs)
