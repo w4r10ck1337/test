@@ -125,28 +125,24 @@ aside {
 
 <div id="charts">
   <div id="year-chart" class="chart">
-    <div class="title">Year</div>
+    <div class="title">Год</div>
   </div>
   <div id="cost-chart" class="chart">
-    <div class="title">Cost</div>
+    <div class="title">Цена</div>
   </div>
   <div id="netto-chart" class="chart">
-    <div class="title">Netto</div>
+    <div class="title">Нетто</div>
+  </div>
+  <div id="netto-chart" class="chart">
+    <div class="title">Импорт/Экспорт</div>
   </div>
 </div>
 
-<aside id="totals"><span id="active">-</span> of <span id="total">-</span> flights selected.</aside>
+<aside id="totals"><span id="active">-</span> из <span id="total">-</span> сделок выбрано.</aside>
 
 <div id="lists">
   <div id="flight-list" class="list"></div>
 </div>
-
-<footer>
-  <span style="float:right;">
-    Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a>.
-  </span>
-  Copyright 2012 <a href="http://squareup.com">Square, Inc.</a>
-</footer>
 
 </div>
 
@@ -173,6 +169,8 @@ d3.csv("deals.json", function(error, flights) {
   // Create the crossfilter for the relevant dimensions and groups.
   var flight = crossfilter(flights),
       all = flight.groupAll(),
+	  inout = flight.dimension(function(d) { return d.inout; }),
+      inouts = inout.group(function(d) { return d; }),
       year = flight.dimension(function(d) { return d.year; }),
       years = year.group(Math.floor),
 	  cost = flight.dimension(function(d) { return Math.min(1000000, d.cost); }),
@@ -198,6 +196,12 @@ d3.csv("deals.json", function(error, flights) {
       .x(d3.scale.linear()
         .domain([0, 110000])
         .rangeRound([0, 25 * 21]))
+	barChart()
+        .dimension(inout)
+        .group(inouts)
+      .x(d3.scale.linear()
+        .domain(["Импорт", "Экспорт"])
+        .rangeRound([0, 5 * 21]))
   ];
   // Given our array of charts, which we assume are in the same order as the
   // .chart elements in the DOM, bind the charts to the DOM and render them.
