@@ -249,9 +249,6 @@ d3.csv("deals.json", function(error, flights) {
           .text(function(d) { return d.inout; });
 	  flightEnter.append("div")
           .attr("class", "destination")
-          .text(function(d) { return d.year; });
-	  flightEnter.append("div")
-          .attr("class", "destination")
           .text(function(d) { return d.cost; });
 	  flightEnter.append("div")
           .attr("class", "destination")
