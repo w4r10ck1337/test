@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Рейтинг таможенных компаний по количеству контрактов</title>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> 
+    <link rel="stylesheet" href="normalize.css">
+    <style>
+	  .tooltip{
+position: absolute;	
+  text-align: center;	
+  width: 13%;	
+  height:10%;		
+  padding: 2vw;	
+  font: 1.2vw sans-serif;		
+  border: 0px;					
+  border-radius: 8px;
+  color:black;
+  box-shadow: -3px 3px 15px #888888;
+  opacity:0;	
+
+}
+</style>
+<body>
+<h2>Рейтинг таможенных компаний по количеству контрактов</h2>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<div id = "svgContent"></div>
+
+<script>
+var data = [{"company":"Белорусско-австрийское совместное предприятие Райзинг общество с ограниченной ответственностью","count":120},
+{"company":"Общество с ограниченной ответственностью ТЭП Белгрузавтотранс","count":120},
+{"company":"Общество с ограниченной ответственностью Белинтертранс","count":120},
+{"company":"Открытое акционерное общество ГомельАТЭП","count":120},
+{"company":"ООО КГС-Транс","count":135},
+{"company":"Открытое акционерное общество БобруйскАТЭП","count":264},
+{"company":"Общество с ограниченной ответственностью СтефЛайн","count":264},
+{"company":"Общество с ограниченной ответственностью Тайтранс","count":264},
+{"company":"Общество с ограниченной ответственностью ГАЛЕОН И К","count":264},
+{"company":"Иностранное частное унитарное транспортное предприятие Бенцингер  общества с ограниченной ответственностью Рольф Бенцингер Шпедитион-транспорте","count":264},
+{"company":"Общество с ограниченной ответственностью БиоЭкоРесурс","count":264},
+{"company":"Частное транспортное унитарное предприятие РР-ТРАНС","count":264},
+{"company":"Общество с ограниченной ответственностью ОРВЕСТ","count":288},
+{"company":"Иностранное частное транспортно-экспедиционное унитарное предприятие ЕВРОВИЛТРАНС","count":288},
+{"company":"Открытое акционерное общество Миноблавтотранс","count":312},
+{"company":"Общество с дополнительной ответственностью ВаДи , Пуховичский район","count":336},
+{"company":"Общество с ограниченной ответственностью ТНА","count":336},
+{"company":"Частное унитарное транспортное предприятие Транс-Лайн-Брест","count":336},
+{"company":"Иностранное частное унитарное транспортно-экспедиторское предприятие ФАНТОМ","count":336},
+{"company":"Общество с ограниченной ответственностью БЕЛТРАНСКОНСАЛТ","count":384}
+];
+var margin = {top:40,left:40,right:40,bottom:40};
+width = 300;
+height = 300;
+radius = Math.min(width-100,height-100)/2;
+var color = d3.scale.category10();
+var arc = d3.svg.arc()  
+         .outerRadius(radius -230)
+         .innerRadius(radius - 50)
+		 .cornerRadius(20);
+var arcOver = d3.svg.arc()  
+.outerRadius(radius +50)
+.innerRadius(0);
+
+var a=width/2 - 20;
+var b=height/2 - 90;
+var svg = d3.select("#svgContent").append("svg")
+          .attr("viewBox", "0 0 " + width + " " + height/2)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+          .append("g")
+          .attr("transform","translate("+a+","+b+")");
+
+		  div = d3.select("body")
+.append("div") 
+.attr("class", "tooltip");
+var pie = d3.layout.pie()
+          .sort(null)
+          .value(function(d){return d.count;})
+		  .padAngle(.02);
+var g = svg.selectAll(".arc")
+        .data(pie(data))
+        .enter()
+        .append("g")
+        .attr("class","arc")
+         .on("mousemove",function(d){
+        	var mouseVal = d3.mouse(this);
+        	div.style("display","none");
+        	div
+        	.html("Компания:"+d.data.company+"</br>"+"Количество контрактов:"+d.data.count)
+            .style("left", (d3.event.pageX+12) + "px")
+            .style("top", (d3.event.pageY-10) + "px")
+            .style("opacity", 1)
+            .style("display","block");
+        })
+        .on("mouseout",function(){div.html(" ").style("display","none");});
+        
+        
+        
+		g.append("path")
+		.attr("d",arc)
+		.style("fill",function(d){return color(d.data.company);})
+		 .attr("d", arc);;
+/*
+		            svg.selectAll("text").data(pie(data)).enter()
+		             .append("text")
+		             .attr("class","label1")
+		             .attr("transform", function(d) {
+		      		   var dist=radius+15;
+		    		   var winkel=(d.startAngle+d.endAngle)/2;
+		    		   var x=dist*Math.sin(winkel)-4;
+		    		   var y=-dist*Math.cos(winkel)-4;
+		    		   
+		    		   return "translate(" + x + "," + y + ")";
+		            })
+		            .attr("dy", "0.35em")
+		            .attr("text-anchor", "middle")
+		            
+		    	    .text(function(d){
+		    	      return d.value;
+		    	    });
+		    	    
+		    	   
+		
+*/
+</script>
+
+<a href="index5.html">Назад</a>
+
+</body>
+</html>
