@@ -242,7 +242,7 @@ d3.csv("deals.json", function(error, flights) {
     renderAll();
   };
   function flightList(div) {
-    var flightsByDate = nestByDate.entries(date.top(40));
+    var flightsByDate = nestByDate.entries(year.top(40));
     div.each(function() {
       var date = d3.select(this).selectAll(".date")
           .data(flightsByDate, function(d) { return d.key; });
