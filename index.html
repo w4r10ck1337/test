@@ -183,7 +183,7 @@ d3.csv("deals.json", function(error, flights) {
       formatTime = d3.time.format("%I:%M %p");
   // A nest operator, for grouping the flight list.
   var nestByDate = d3.nest()
-      .key(function(d) { return d3.time.day(d.date); });
+      .key(function(d) { return d.year; });
   // A little coercion, since the CSV is untyped.
   flights.forEach(function(d, i) {
     d.index = i;
