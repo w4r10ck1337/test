@@ -247,6 +247,12 @@ d3.csv("deals.json", function(error, flights) {
     div.each(function() {
       var date = d3.select(this).selectAll(".date")
           .data(flightsByDate, function(d) { return d.key; });
+	  date.enter().append("div")
+          .attr("class", "date")
+        .append("div")
+          .attr("class", "day")
+          .text(function(d) { return 1488; });
+      date.exit().remove();
       var flight = date.order().selectAll(".flight")
           .data(function(d) { return d.values; }, function(d) { return d.index; });
       var flightEnter = flight.enter().append("div")
