@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Поставки урана</title>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> 
+    <link rel="stylesheet" href="normalize.css">
+    <style>
+	  .tooltip{
+position: absolute;	
+  text-align: center;	
+  width: 13%;	
+  height:10%;		
+  padding: 2vw;	
+  font: 1.2vw sans-serif;		
+  border: 0px;					
+  border-radius: 8px;
+  color:black;
+  box-shadow: -3px 3px 15px #888888;
+  opacity:0;	
+
+}
+</style>
+<body>
+<h2>Рейтинг стран по поставкам урана в Россию</h2>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<div id = "svgContent"></div>
+
+<script>
+var data = [{"country":"ФРАНЦИЯ","volume":21495557.35},
+{"country":"БОЛГАРИЯ","volume":484145.82},
+{"country":"ГЕРМАНИЯ","volume":9177859.58},
+{"country":"ЯПОНИЯ","volume":62.72},
+{"country":"ВЕНГРИЯ","volume":2969959.73},
+{"country":"ФИНЛЯНДИЯ","volume":817.98},
+{"country":"БЕЛАРУСЬ","volume":268680.61},
+{"country":"ТАНЗАНИЯ, ОБЪЕДИНЕННАЯ РЕСПУБЛИКА","volume":24083.04},
+{"country":"НОРВЕГИЯ","volume":29605.64},
+{"country":"НИГЕР","volume":54203849.53},
+{"country":"ПОЛЬША","volume":83326.36},
+{"country":"ЛИВИЯ","volume":26745.0},
+{"country":"КИТАЙ","volume":19064.79},
+{"country":"КАНАДА","volume":54508778.72},
+{"country":"ЮЖНАЯ АФРИКА","volume":29500.0},
+{"country":"ВЬЕТНАМ","volume":5438.64},
+{"country":"ИТАЛИЯ","volume":7485.0},
+{"country":"ЧЕШСКАЯ РЕСПУБЛИКА","volume":98514846.6},
+{"country":"АВСТРАЛИЯ","volume":28113.27},
+{"country":"СОЕДИНЕННОЕ КОРОЛЕВСТВО","volume":17380155.79},
+{"country":"НИДЕРЛАНДЫ","volume":83662785.14},
+{"country":"УЗБЕКИСТАН","volume":370500.0},
+{"country":"СОЕДИНЕННЫЕ ШТАТЫ","volume":374528751.89},
+{"country":"СЛОВАКИЯ","volume":2826.81},
+{"country":"КАЗАХСТАН","volume":1375270602.05},
+{"country":"УКРАИНА","volume":694436479.41},
+{"country":"ШВЕЦИЯ","volume":13110.0},
+{"country":"ИЗРАИЛЬ","volume":224.55}
+];
+var margin = {top:40,left:40,right:40,bottom:40};
+width = 300;
+height = 300;
+radius = Math.min(width-100,height-100)/2;
+var color = d3.scale.category10();
+var arc = d3.svg.arc()  
+         .outerRadius(radius -230)
+         .innerRadius(radius - 50)
+		 .cornerRadius(20);
+var arcOver = d3.svg.arc()  
+.outerRadius(radius +50)
+.innerRadius(0);
+
+var a=width/2 - 20;
+var b=height/2 - 90;
+var svg = d3.select("#svgContent").append("svg")
+          .attr("viewBox", "0 0 " + width + " " + height/2)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+          .append("g")
+          .attr("transform","translate("+a+","+b+")");
+
+		  div = d3.select("body")
+.append("div") 
+.attr("class", "tooltip");
+var pie = d3.layout.pie()
+          .sort(null)
+          .value(function(d){return d.volume;})
+		  .padAngle(.02);
+var g = svg.selectAll(".arc")
+        .data(pie(data))
+        .enter()
+        .append("g")
+        .attr("class","arc")
+         .on("mousemove",function(d){
+        	var mouseVal = d3.mouse(this);
+        	div.style("display","none");
+        	div
+        	.html("Страна:"+d.data.country+"</br>"+"Объем:"+d.data.volume+"$")
+            .style("left", (d3.event.pageX+12) + "px")
+            .style("top", (d3.event.pageY-10) + "px")
+            .style("opacity", 1)
+            .style("display","block");
+        })
+        .on("mouseout",function(){div.html(" ").style("display","none");});
+        
+        
+        
+		g.append("path")
+		.attr("d",arc)
+		.style("fill",function(d){return color(d.data.country);})
+		 .attr("d", arc);;
+/*
+		            svg.selectAll("text").data(pie(data)).enter()
+		             .append("text")
+		             .attr("class","label1")
+		             .attr("transform", function(d) {
+		      		   var dist=radius+15;
+		    		   var winkel=(d.startAngle+d.endAngle)/2;
+		    		   var x=dist*Math.sin(winkel)-4;
+		    		   var y=-dist*Math.cos(winkel)-4;
+		    		   
+		    		   return "translate(" + x + "," + y + ")";
+		            })
+		            .attr("dy", "0.35em")
+		            .attr("text-anchor", "middle")
+		            
+		    	    .text(function(d){
+		    	      return d.value;
+		    	    });
+		    	    
+		    	   
+		
+*/
+</script>
+
+
+</body>
+</html>
