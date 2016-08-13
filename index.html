@@ -169,29 +169,20 @@ aside {
   </div>
 </div>
 
-<aside id="totals"><span id="active">-</span> of <span id="total">-</span> flights selected.</aside>
+<aside id="totals"><span id="active">-</span> of <span id="total">-</span> deals selected.</aside>
 
 <div id="lists">
   <div id="flight-list" class="list"></div>
 </div>
 
-<footer>
-  <span style="float:right;">
-    Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a>.
-  </span>
-  Copyright 2012 <a href="http://squareup.com">Square, Inc.</a>
-</footer>
-
 </div>
-
-<a href="https://github.com/square/crossfilter"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
 
 <script src="crossfilter.v1.min.js"></script>
 <script src="d3.v3.min.js"></script>
 <script>
 
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
-d3.csv("flights-3m.json", function(error, flights) {
+d3.csv("flights-3m.json", function(error, deals) {
 
   // Various formatters.
   var formatNumber = d3.format(",d"),
@@ -201,59 +192,30 @@ d3.csv("flights-3m.json", function(error, flights) {
 
   // A nest operator, for grouping the flight list.
   var nestByDate = d3.nest()
-      .key(function(d) { return d3.time.day(d.date); });
+      .key(function(d) { return d.year; });
 
   // A little coercion, since the CSV is untyped.
-  flights.forEach(function(d, i) {
+  deals.forEach(function(d, i) {
     d.index = i;
     d.date = parseDate(d.date);
-    d.delay = +d.delay;
-    d.distance = +d.distance;
+    d.year = +d.year;
+    //d.distance = +d.distance;
   });
 
   // Create the crossfilter for the relevant dimensions and groups.
-  var flight = crossfilter(flights),
-      all = flight.groupAll(),
-      date = flight.dimension(function(d) { return d.date; }),
-      dates = date.group(d3.time.day),
-      hour = flight.dimension(function(d) { return d.date.getHours() + d.date.getMinutes() / 60; }),
-      hours = hour.group(Math.floor),
-      delay = flight.dimension(function(d) { return Math.max(-60, Math.min(149, d.delay)); }),
-      delays = delay.group(function(d) { return Math.floor(d / 10) * 10; }),
-      distance = flight.dimension(function(d) { return Math.min(1999, d.distance); }),
-      distances = distance.group(function(d) { return Math.floor(d / 50) * 50; });
+  var deal = crossfilter(deals),
+      all = deal.groupAll(),
+      year = deal.dimension(function(d) { return d.year; }),
+      years = year.group(function(d) { return d.year; }),
 
   var charts = [
 
     barChart()
-        .dimension(hour)
-        .group(hours)
+        .dimension(year)
+        .group(years)
       .x(d3.scale.linear()
-        .domain([0, 24])
-        .rangeRound([0, 10 * 24])),
-
-    barChart()
-        .dimension(delay)
-        .group(delays)
-      .x(d3.scale.linear()
-        .domain([-60, 150])
-        .rangeRound([0, 10 * 21])),
-
-    barChart()
-        .dimension(distance)
-        .group(distances)
-      .x(d3.scale.linear()
-        .domain([0, 2000])
-        .rangeRound([0, 10 * 40])),
-
-    barChart()
-        .dimension(date)
-        .group(dates)
-        .round(d3.time.day.round)
-      .x(d3.time.scale()
-        .domain([new Date(2001, 0, 1), new Date(2001, 3, 1)])
-        .rangeRound([0, 10 * 90]))
-        .filter([new Date(2001, 1, 1), new Date(2001, 2, 1)])
+        .domain([2000, 2016])
+        .rangeRound([0, 10 * 16]))
 
   ];
 
@@ -266,11 +228,11 @@ d3.csv("flights-3m.json", function(error, flights) {
 
   // Render the initial lists.
   var list = d3.selectAll(".list")
-      .data([flightList]);
+      .data([dealList]);
 
   // Render the total.
   d3.selectAll("#total")
-      .text(formatNumber(flight.size()));
+      .text(formatNumber(deal.size()));
 
   renderAll();
 
@@ -305,51 +267,34 @@ d3.csv("flights-3m.json", function(error, flights) {
     renderAll();
   };
 
-  function flightList(div) {
-    var flightsByDate = nestByDate.entries(date.top(40));
+  function dealList(div) {
+    var dealsByDate = nestByDate.entries(date.top(40));
 
     div.each(function() {
-      var date = d3.select(this).selectAll(".date")
-          .data(flightsByDate, function(d) { return d.key; });
+      var year = d3.select(this).selectAll(".year")
+          .data(dealsByDate, function(d) { return d.key; });
 
-      date.enter().append("div")
+      year.enter().append("div")
           .attr("class", "date")
         .append("div")
           .attr("class", "day")
-          .text(function(d) { return formatDate(d.values[0].date); });
+          .text(function(d) { return d.values[0].year; });
 
-      date.exit().remove();
+      year.exit().remove();
 
-      var flight = date.order().selectAll(".flight")
+      var deal = year.order().selectAll(".deal")
           .data(function(d) { return d.values; }, function(d) { return d.index; });
 
-      var flightEnter = flight.enter().append("div")
+      var dealEnter = deal.enter().append("div")
           .attr("class", "flight");
 
-      flightEnter.append("div")
+      dealEnter.append("div")
           .attr("class", "time")
-          .text(function(d) { return formatTime(d.date); });
+          .text(function(d) { return d.year; });
 
-      flightEnter.append("div")
-          .attr("class", "origin")
-          .text(function(d) { return d.origin; });
+      deal.exit().remove();
 
-      flightEnter.append("div")
-          .attr("class", "destination")
-          .text(function(d) { return d.destination; });
-
-      flightEnter.append("div")
-          .attr("class", "distance")
-          .text(function(d) { return formatNumber(d.distance) + " mi."; });
-
-      flightEnter.append("div")
-          .attr("class", "delay")
-          .classed("early", function(d) { return d.delay < 0; })
-          .text(function(d) { return formatChange(d.delay) + " min."; });
-
-      flight.exit().remove();
-
-      flight.order();
+      deal.order();
     });
   }
 
