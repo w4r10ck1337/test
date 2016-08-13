@@ -94,7 +94,7 @@ h1, h2 {
 #flight-list .flight {
   line-height: 1.5em;
   background: #eee;
-  width: 640px;
+  width: 1000px;
   margin-bottom: 1px;
 }
 #flight-list .time {
@@ -102,11 +102,11 @@ h1, h2 {
 }
 #flight-list .flight div {
   display: inline-block;
-  width: 100px;
+  width: 150px;
 }
 #flight-list div.distance,
 #flight-list div.delay {
-  width: 160px;
+  width: 0px;
   padding-right: 10px;
   text-align: right;
 }
@@ -135,6 +135,9 @@ aside {
   </div>
   <div id="netto-chart" class="chart">
     <div class="title">Импорт/Экспорт</div>
+  </div>
+  <div id="netto-chart" class="chart">
+    <div class="title">Регион</div>
   </div>
 </div>
 
@@ -167,39 +170,47 @@ d3.csv("deals.json", function(error, flights) {
   // Create the crossfilter for the relevant dimensions and groups.
   var flight = crossfilter(flights),
       all = flight.groupAll(),
-	  inout = flight.dimension(function(d) { return d.inout; }),
-      inouts = inout.group(function(d) { if (d == "Импорт") return 0; return 1; }),
+	  inout = flight.dimension(function(d) { return d.inout_; }),
+      inouts = inout.group(Math.floor),
       year = flight.dimension(function(d) { return d.year; }),
       years = year.group(Math.floor),
 	  cost = flight.dimension(function(d) { return Math.min(1000000, d.cost); }),
       costs = cost.group(function(d) { return Math.floor(d / 100000) * 100000; }),
 	  netto = flight.dimension(function(d) { return Math.min(100000, d.netto); }),
       nettos = netto.group(function(d) { return Math.floor(d / 10000) * 10000; });
+	  region = flight.dimension(function(d) { return d.region_; }),
+      regions = region.group(Math.floor);
   var charts = [
     barChart()
         .dimension(year)
         .group(years)
       .x(d3.scale.linear()
-        .domain([2010, 2020])
-        .rangeRound([0, 15 * 22])),
+        .domain([2013, 2017])
+        .rangeRound([0, 14 * 22])),
 	barChart()
         .dimension(cost)
         .group(costs)
       .x(d3.scale.linear()
-        .domain([0, 1100000])
-        .rangeRound([0, 25 * 21])),
+        .domain([0, 1020000])
+        .rangeRound([0, 20 * 21])),
 	barChart()
         .dimension(netto)
         .group(nettos)
       .x(d3.scale.linear()
-        .domain([0, 110000])
+        .domain([0, 102000])
         .rangeRound([0, 25 * 21])),
 	barChart()
         .dimension(inout)
         .group(inouts)
       .x(d3.scale.linear()
-        .domain([0, 1])
-        .rangeRound([0, 5 * 21]))
+		.domain([0, 1.1])
+        .rangeRound([0, 6 * 21])),
+	barChart()
+        .dimension(region)
+        .group(regions)
+      .x(d3.scale.linear()
+		.domain([0, 10])
+        .rangeRound([0, 11 * 21]))
   ];
   // Given our array of charts, which we assume are in the same order as the
   // .chart elements in the DOM, bind the charts to the DOM and render them.
@@ -245,12 +256,40 @@ d3.csv("deals.json", function(error, flights) {
     div.each(function() {
       var date = d3.select(this).selectAll(".date")
           .data(flightsByDate, function(d) { return d.key; });
+	  
 	  date.enter().append("div")
           .attr("class", "date")
         .append("div")
           .attr("class", "day")
           .text(function(d) { return d.key; });
       date.exit().remove();
+	  
+      var header = date.enter().append("div")
+          .attr("class", "flight");
+	  header.append("div")
+          .attr("class", "destination")
+          .text(function(d) { return "Импорт/Экспорт"; });
+	  header.append("div")
+          .attr("class", "destination")
+          .text(function(d) { return "Цена"; });
+	  header.append("div")
+          .attr("class", "destination")
+          .text(function(d) { return "Нетто"; });
+      header.append("div")
+          .attr("class", "destination")
+          .text(function(d) { return "Количество"; });
+      header.append("div")
+          .attr("class", "destination")
+          .text(function(d) { return "Регион"; });
+	  header.append("div")
+          .attr("class", "destination")
+          .text(function(d) { return "Наименование"; });  
+
+	  
+	  
+      date.exit().remove();
+	  
+      
       var flight = date.order().selectAll(".flight")
           .data(function(d) { return d.values; }, function(d) { return d.index; });
       var flightEnter = flight.enter().append("div")
@@ -270,6 +309,10 @@ d3.csv("deals.json", function(error, flights) {
       flightEnter.append("div")
           .attr("class", "destination")
           .text(function(d) { return d.region; });
+	  flightEnter.append("div")
+          .attr("class", "destination")
+          .text(function(d) { return d.tnved; });
+		  
       flight.exit().remove();
       flight.order();
     });
