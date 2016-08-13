@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Рейтинг таможенных компаний по сумме контрактов</title>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> 
+    <link rel="stylesheet" href="normalize.css">
+    <style>
+	  .tooltip{
+position: absolute;	
+  text-align: center;	
+  width: 13%;	
+  height:10%;		
+  padding: 2vw;	
+  font: 1.2vw sans-serif;		
+  border: 0px;					
+  border-radius: 8px;
+  color:black;
+  box-shadow: -3px 3px 15px #888888;
+  opacity:0;	
+
+}
+</style>
+<body>
+<h2>Рейтинг таможенных компаний по сумме контрактов</h2>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<div id = "svgContent"></div>
+
+<script>
+var data = [
+{"company":"Частное унитарное транспортное предприятие Транс-Лайн-Брест","sum":143655056},
+{"company":"Иностранное частное унитарное транспортно-экспедиторское предприятие ФАНТОМ","sum":143655056},
+{"company":"Общество с дополнительной ответственностью ВаДи , Пуховичский район","sum":143655056},
+{"company":"Общество с ограниченной ответственностью ТНА","sum":143655056},
+{"company":"Общество с ограниченной ответственностью БЕЛТРАНСКОНСАЛТ","sum":164177207},
+{"company":"","sum":5294714952},
+{"company":"ООО Уссурийскстройтранс","sum":17901968503},
+{"company":"ООО Дружба","sum":17901968503},
+{"company":"ООО НАБАЗ","sum":35803937006},
+{"company":"ООО Россия","sum":35803937006},
+{"company":"ООО Дальимпэкс ДВ Сервис","sum":107411811018},
+{"company":"ООО Татра - 1","sum":125313779521},
+{"company":"ООО Примортрансавто","sum":125313779521},
+{"company":"ООО ВЛ Экспресс","sum":196921653533}];
+var margin = {top:40,left:40,right:40,bottom:40};
+width = 300;
+height = 300;
+radius = Math.min(width-100,height-100)/2;
+var color = d3.scale.category10();
+var arc = d3.svg.arc()  
+         .outerRadius(radius -230)
+         .innerRadius(radius - 50)
+		 .cornerRadius(20);
+var arcOver = d3.svg.arc()  
+.outerRadius(radius +50)
+.innerRadius(0);
+
+var a=width/2 - 20;
+var b=height/2 - 90;
+var svg = d3.select("#svgContent").append("svg")
+          .attr("viewBox", "0 0 " + width + " " + height/2)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+          .append("g")
+          .attr("transform","translate("+a+","+b+")");
+
+		  div = d3.select("body")
+.append("div") 
+.attr("class", "tooltip");
+var pie = d3.layout.pie()
+          .sort(null)
+          .value(function(d){return d.sum;})
+		  .padAngle(.02);
+var g = svg.selectAll(".arc")
+        .data(pie(data))
+        .enter()
+        .append("g")
+        .attr("class","arc")
+         .on("mousemove",function(d){
+        	var mouseVal = d3.mouse(this);
+        	div.style("display","none");
+        	div
+        	.html("Компания:"+d.data.company+"</br>"+"Сумма контрактов:"+d.data.sum+"р")
+            .style("left", (d3.event.pageX+12) + "px")
+            .style("top", (d3.event.pageY-10) + "px")
+            .style("opacity", 1)
+            .style("display","block");
+        })
+        .on("mouseout",function(){div.html(" ").style("display","none");});
+        
+        
+        
+		g.append("path")
+		.attr("d",arc)
+		.style("fill",function(d){return color(d.data.company);})
+		 .attr("d", arc);;
+/*
+		            svg.selectAll("text").data(pie(data)).enter()
+		             .append("text")
+		             .attr("class","label1")
+		             .attr("transform", function(d) {
+		      		   var dist=radius+15;
+		    		   var winkel=(d.startAngle+d.endAngle)/2;
+		    		   var x=dist*Math.sin(winkel)-4;
+		    		   var y=-dist*Math.cos(winkel)-4;
+		    		   
+		    		   return "translate(" + x + "," + y + ")";
+		            })
+		            .attr("dy", "0.35em")
+		            .attr("text-anchor", "middle")
+		            
+		    	    .text(function(d){
+		    	      return d.value;
+		    	    });
+		    	    
+		    	   
+		
+*/
+</script>
+
+<a href="index5.html">Назад</a>
+
+</body>
+</html>
