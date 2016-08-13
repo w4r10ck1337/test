@@ -175,9 +175,7 @@ d3.csv("deals.json", function(error, deals) {
   // A little coercion, since the CSV is untyped.
   deals.forEach(function(d, i) {
     d.index = i;
-    d.year = d.year;
-    d.delay = +d.delay;
-    d.distance = +d.distance;
+    d.year = +d.year;
   });
   // Create the crossfilter for the relevant dimensions and groups.
   var deal = crossfilter(deals),
