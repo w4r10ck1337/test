@@ -187,15 +187,14 @@ d3.csv("flights-3m.json", function(error, flights) {
   // A little coercion, since the CSV is untyped.
   flights.forEach(function(d, i) {
     d.index = i;
-    d.date = parseDate(d.date);
     d.delay = +d.delay;
     d.distance = +d.distance;
   });
   // Create the crossfilter for the relevant dimensions and groups.
   var flight = crossfilter(flights),
       all = flight.groupAll(),
-      date = flight.dimension(function(d) { return d.date; }),
-      dates = date.group(d3.time.day),
+      //year = flight.dimension(function(d) { return d.year; }),
+      //years = date.group(function(d) { return d.year; }),
       hour = flight.dimension(function(d) { return d.date.getHours() + d.date.getMinutes() / 60; }),
       hours = hour.group(Math.floor),
       delay = flight.dimension(function(d) { return Math.max(-60, Math.min(149, d.delay)); }),
@@ -221,14 +220,12 @@ d3.csv("flights-3m.json", function(error, flights) {
       .x(d3.scale.linear()
         .domain([0, 2000])
         .rangeRound([0, 10 * 40])),
-    barChart()
-        .dimension(date)
-        .group(dates)
-        .round(d3.time.day.round)
-      .x(d3.time.scale()
-        .domain([new Date(2001, 0, 1), new Date(2001, 3, 1)])
-        .rangeRound([0, 10 * 90]))
-        .filter([new Date(2001, 1, 1), new Date(2001, 2, 1)])
+    /*barChart()
+        .dimension(year)
+        .group(years)
+      .x(d3.scale.linear()
+        .domain([1990, 2010])
+        .rangeRound([0, 10 * 12])),*/
   ];
   // Given our array of charts, which we assume are in the same order as the
   // .chart elements in the DOM, bind the charts to the DOM and render them.
@@ -274,19 +271,10 @@ d3.csv("flights-3m.json", function(error, flights) {
     div.each(function() {
       var date = d3.select(this).selectAll(".date")
           .data(flightsByDate, function(d) { return d.key; });
-      date.enter().append("div")
-          .attr("class", "date")
-        .append("div")
-          .attr("class", "day")
-          .text(function(d) { return formatDate(d.values[0].date); });
-      date.exit().remove();
       var flight = date.order().selectAll(".flight")
           .data(function(d) { return d.values; }, function(d) { return d.index; });
       var flightEnter = flight.enter().append("div")
           .attr("class", "flight");
-      flightEnter.append("div")
-          .attr("class", "time")
-          .text(function(d) { return formatTime(d.date); });
       flightEnter.append("div")
           .attr("class", "origin")
           .text(function(d) { return d.origin; });
