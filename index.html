@@ -94,13 +94,19 @@ h1, h2 {
 #flight-list .flight {
   line-height: 1.5em;
   background: #eee;
-  width: 1000px;
+  width: 1050px;
   margin-bottom: 1px;
 }
+
 #flight-list .time {
   color: #999;
 }
 #flight-list .flight div {
+  display: inline-block;
+  width: 150px;
+}
+
+#flight-list .header div {
   display: inline-block;
   width: 150px;
 }
@@ -142,9 +148,9 @@ aside {
 </div>
 
 <aside id="totals"><span id="active">-</span> из <span id="total">-</span> сделок выбрано.</aside>
-
+<br>
 <div id="lists">
-  <div id="flight-list" class="list"></div>
+  <div id="flight-list" class="list"><div class="flight"><div class="destination">Импорт/Экспорт</div><div class="destination">Год</div><div class="destination">Цена</div><div class="destination">Нетто</div><div class="destination">Количество</div><div class="destination">Регион</div><div class="destination">Наименование</div></div></div>
 </div>
 
 </div>
@@ -258,37 +264,10 @@ d3.csv("deals.json", function(error, flights) {
           .data(flightsByDate, function(d) { return d.key; });
 	  
 	  date.enter().append("div")
-          .attr("class", "date")
-        .append("div")
-          .attr("class", "day")
-          .text(function(d) { return d.key; });
-      date.exit().remove();
-	  
-      var header = date.enter().append("div")
-          .attr("class", "flight");
-	  header.append("div")
-          .attr("class", "destination")
-          .text(function(d) { return "Импорт/Экспорт"; });
-	  header.append("div")
-          .attr("class", "destination")
-          .text(function(d) { return "Цена"; });
-	  header.append("div")
-          .attr("class", "destination")
-          .text(function(d) { return "Нетто"; });
-      header.append("div")
-          .attr("class", "destination")
-          .text(function(d) { return "Количество"; });
-      header.append("div")
-          .attr("class", "destination")
-          .text(function(d) { return "Регион"; });
-	  header.append("div")
-          .attr("class", "destination")
-          .text(function(d) { return "Наименование"; });  
-
-	  
-	  
-      date.exit().remove();
-	  
+          .attr("class", "date");
+        
+		
+	  date.exit().remove();
       
       var flight = date.order().selectAll(".flight")
           .data(function(d) { return d.values; }, function(d) { return d.index; });
@@ -297,6 +276,9 @@ d3.csv("deals.json", function(error, flights) {
       flightEnter.append("div")
           .attr("class", "destination")
           .text(function(d) { return d.inout; });
+	  flightEnter.append("div")
+          .attr("class", "destination")
+          .text(function(d) { return d.year; });
 	  flightEnter.append("div")
           .attr("class", "destination")
           .text(function(d) { return d.cost; });
