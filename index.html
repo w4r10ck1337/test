@@ -192,7 +192,8 @@ d3.csv("flights-3m.json", function(error, flights) {
   var flight = crossfilter(flights),
       all = flight.groupAll(),
       year = flight.dimension(function(d) { return d.year; }),
-      years = date.group(function(d) { return d.year; }),
+      years = date.group(function(d) { return d.year; });
+	  
   var charts = [
     barChart()
         .dimension(year)
@@ -241,7 +242,7 @@ d3.csv("flights-3m.json", function(error, flights) {
     renderAll();
   };
   function flightList(div) {
-    var flightsByDate = nestByDate.entries(year.top(40));
+    var flightsByDate = nestByDate.entries(date.top(40));
     div.each(function() {
       var date = d3.select(this).selectAll(".date")
           .data(flightsByDate, function(d) { return d.key; });
