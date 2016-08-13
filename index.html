@@ -278,7 +278,7 @@ d3.csv("deals.json", function(error, flights) {
     function chart(div) {
       var width = x.range()[1],
           height = y.range()[0];
-      y.domain([0, 100]);
+      //y.domain([0, 100]);
       div.each(function() {
         var div = d3.select(this),
             g = div.select("g");
